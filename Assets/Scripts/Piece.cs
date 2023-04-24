@@ -4,33 +4,33 @@ using UnityEngine;
 
 public enum PieceTypes
 {
-    Deborah = 0,
-    Elisha = 1,
-    Lamb = 2,
-    Andrew = 3
+    Red = 0,
+    Blue = 1,
+    Green = 2,
+    Pink = 3
 }
 
 public class Piece
 {
-    // This script will manage the state of a single
-    // piece in the grid.
-
     private Vector3 position;
     private Vector2 gridPosition;
     private PieceTypes pieceType;
+    private bool setForDestruction;
 
     public Piece()
     {
         position = Vector3.zero;
         gridPosition = Vector2.zero;
-        pieceType = PieceTypes.Andrew;
+        pieceType = PieceTypes.Pink;
+        setForDestruction = false;
     }
 
     public Piece(Vector3 position, Vector2 gridPosition)
     {
         this.position = position;
         this.gridPosition = gridPosition;
-        this.pieceType = PieceTypes.Andrew;
+        this.pieceType = PieceTypes.Pink;
+        this.setForDestruction = false;
     }
 
     public Piece(Vector3 position, Vector2 gridPosition, PieceTypes pieceType)
@@ -38,6 +38,7 @@ public class Piece
         this.position = position;
         this.gridPosition = gridPosition;
         this.pieceType = pieceType;
+        this.setForDestruction = false;
     }
 
     public Vector3 GetPosition()
@@ -48,5 +49,29 @@ public class Piece
     public PieceTypes GetPieceType()
     {
         return pieceType;
+    }
+    public void SetForDestruction()
+    {
+        this.setForDestruction = true;
+    }
+
+    public void SetPieceType(PieceTypes pieceType)
+    {
+        this.pieceType = pieceType;
+    }
+
+    public void SetGridPosition(Vector2 position)
+    {
+        this.gridPosition = position;
+    }
+
+    public Vector3 GetGridPosition()
+    {
+        return gridPosition;
+    }
+
+    public bool GetDestruction()
+    {
+        return setForDestruction;
     }
 }
