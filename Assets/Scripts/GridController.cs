@@ -87,10 +87,20 @@ public class GridController : MonoBehaviour
                     controller.SetPiece(newPiece);
 
                 }
-                else 
+                else if (pieceType == 4)
                 {
                     GameObject pieceGameObject = Instantiate(piecePrefab4, newPiece.GetPosition(), Quaternion.identity);
                     newPiece.SetPieceType(PieceTypes.Pink);
+
+                    PieceController controller = pieceGameObject.GetComponent<PieceController>();
+                    controller.SetPiece(newPiece);
+
+                }
+
+                else
+                {
+                    GameObject pieceGameObject = Instantiate(piecePrefab4, newPiece.GetPosition(), Quaternion.identity);
+                    newPiece.SetPieceType(PieceTypes.Cyan);
 
                     PieceController controller = pieceGameObject.GetComponent<PieceController>();
                     controller.SetPiece(newPiece);
@@ -112,28 +122,29 @@ public class GridController : MonoBehaviour
         }
     }
 
-    private void Update()
+    void Update()
     {
         if (validMoveInProcess)
         {
-            Debug.Log("Switching");
-
-            // Update the visual layer
+            //visual layer
             Vector3 placeHolderPosition = pressedDownGameObject.transform.position;
             pressedDownGameObject.transform.position = pressedUpGameObject.transform.position;
             pressedUpGameObject.transform.position = placeHolderPosition;
 
-            // Update the data layer to match the visual layer
             Piece placeHolderPiece = grid[(int)endMovementPiecePosition.x, (int)endMovementPiecePosition.y];
             grid[(int)endMovementPiecePosition.x, (int)endMovementPiecePosition.y] = grid[(int)startMovementPiecePosition.x, (int)startMovementPiecePosition.y];
             grid[(int)startMovementPiecePosition.x, (int)startMovementPiecePosition.y] = placeHolderPiece;
 
+            grid[(int)endMovementPiecePosition.x, (int)endMovementPiecePosition.y].SetGridPosition(endMovementPiecePosition);
+            grid[(int)endMovementPiecePosition.x, (int)endMovementPiecePosition.y].SetForDestruction(true);
+
+            grid[(int)startMovementPiecePosition.x, (int)startMovementPiecePosition.y].SetGridPosition(startMovementPiecePosition);
+            grid[(int)startMovementPiecePosition.x, (int)startMovementPiecePosition.y].SetForDestruction(false);
+
             validMoveInProcess = false;
 
-            matchesFound += 1;
+            AddMatchesFound();
         }
-
-        matchesFoundText.GetComponent<Text>().text = matchesFound.ToString();
     }
 
     private Piece GetGridPiece(int row, int column)
@@ -189,6 +200,20 @@ public class GridController : MonoBehaviour
         return null;
     }
 
+    private void SubtractMove()
+    {
+        // Subtract one from turns left in the game manager
+        GameManager gameManager = gameObject.GetComponent<GameManager>();
+        gameManager.SubtractOneFromTurnsLeft();
+    }
+
+    private void AddMatchesFound()
+    {
+        // Subtract one from turns left in the game manager
+        GameManager gameManager = gameObject.GetComponent<GameManager>();
+        gameManager.AddOneToMatchesFound();
+    }
+
     public void ValidMove(Vector2 start, Vector2 end)
     {
         Debug.Log("validating start (" + start.x + ", " + start.y + ") | end (" + end.x + ", " + end.y + ")");
@@ -212,16 +237,22 @@ public class GridController : MonoBehaviour
                 Piece midPiece1 = GetGridPiece((int)start.x, (int)start.y);
                 Piece toDestroy1 = GetGridPiece((int)end.x, (int)end.y);
                 Debug.Log("Mid piece type: " + midPiece1.GetPieceType());
+
                 if (topPiece1.GetPieceType() == bottomPiece1.GetPieceType())
                 {
                     if (topPiece1.GetPieceType() == midPiece1.GetPieceType())
                     {
-                        matchFound = true;
-                        validMoveInProcess = true;
-                        topPiece1.SetForDestruction();
-                        bottomPiece1.SetForDestruction();
-                        toDestroy1.SetForDestruction();
-                        Debug.Log("======= MATCHED =======");
+                        // Check that the start and end are not in the same
+                        // column
+                        if (start.x != end.x)
+                        {
+                            matchFound = true;
+                            validMoveInProcess = true;
+                            topPiece1.SetForDestruction();
+                            bottomPiece1.SetForDestruction();
+                            toDestroy1.SetForDestruction();
+                            Debug.Log("======= MATCHED =======");
+                        }
                     }
                 }
             }
@@ -304,14 +335,19 @@ public class GridController : MonoBehaviour
                 {
                     if (rightPiece.GetPieceType() == checkPiece3.GetPieceType())
                     {
-                        matchFound = true;
-                        validMoveInProcess = true;
-                        Piece toDestroy2 = GetGridPiece((int)end.x, (int)end.y);
+                        // Check that the start and end are not in the same
+                        // row
+                        if (start.y != end.y)
+                        {
+                            matchFound = true;
+                            validMoveInProcess = true;
+                            Piece toDestroy2 = GetGridPiece((int)end.x, (int)end.y);
 
-                        rightPiece.SetForDestruction();
-                        leftPiece.SetForDestruction();
-                        toDestroy2.SetForDestruction();
-                        Debug.Log("======= MATCHED =======");
+                            rightPiece.SetForDestruction();
+                            leftPiece.SetForDestruction();
+                            toDestroy2.SetForDestruction();
+                            Debug.Log("======= MATCHED =======");
+                        }
                     }
                 }
             }
@@ -383,7 +419,7 @@ public class GridController : MonoBehaviour
             }
         }
 
-        GameManager gameManager = GameObject
+        SubtractMove();
 
         Debug.Log("not valid move");
     }

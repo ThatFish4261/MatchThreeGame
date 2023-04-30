@@ -7,7 +7,9 @@ public enum PieceTypes
     Red = 0,
     Blue = 1,
     Green = 2,
-    Pink = 3
+    Pink = 3,
+    Cyan = 4,
+    Blank = 5
 }
 
 public class Piece
@@ -53,6 +55,10 @@ public class Piece
     public void SetForDestruction()
     {
         this.setForDestruction = true;
+    }
+    public void SetForDestruction(bool value)
+    {
+        this.setForDestruction = value;
     }
 
     public void SetPieceType(PieceTypes pieceType)
