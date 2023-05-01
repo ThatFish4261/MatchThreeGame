@@ -33,8 +33,19 @@ public class GridController : MonoBehaviour
 
     private Piece[,] grid = new Piece[8, 8];
 
+    /*[SerializeField] public AudioSource audioSource;
+
+    [SerializeField] public AudioClip GoodSound;
+    [SerializeField] public AudioClip BadSound;
+
+    [SerializeField] public AudioClip WinSound;
+    [SerializeField] public AudioClip LoseSound;*/
+
+
     void Start()
     {
+        //audioSource = GetComponent<AudioSource>();
+
         pressedDown = false;
 
         for (int row = 0; row < grid.GetLength(0); row++)
@@ -144,6 +155,7 @@ public class GridController : MonoBehaviour
             validMoveInProcess = false;
 
             AddMatchesFound();
+            //audioSource.PlayOneShot(GoodSound);
         }
     }
 
