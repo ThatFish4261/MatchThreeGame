@@ -33,18 +33,19 @@ public class GridController : MonoBehaviour
 
     private Piece[,] grid = new Piece[8, 8];
 
-    /*[SerializeField] public AudioSource audioSource;
+    [Header("Sounds")]
+    [SerializeField] public AudioSource audioSource;
 
     [SerializeField] public AudioClip GoodSound;
     [SerializeField] public AudioClip BadSound;
 
-    [SerializeField] public AudioClip WinSound;
-    [SerializeField] public AudioClip LoseSound;*/
+    //[SerializeField] public AudioClip WinSound;
+    //[SerializeField] public AudioClip LoseSound;
 
 
     void Start()
     {
-        //audioSource = GetComponent<AudioSource>();
+        audioSource = GetComponent<AudioSource>();
 
         pressedDown = false;
 
@@ -155,7 +156,7 @@ public class GridController : MonoBehaviour
             validMoveInProcess = false;
 
             AddMatchesFound();
-            //audioSource.PlayOneShot(GoodSound);
+            audioSource.PlayOneShot(GoodSound);
         }
     }
 
@@ -434,6 +435,7 @@ public class GridController : MonoBehaviour
         SubtractMove();
 
         Debug.Log("not valid move");
+        audioSource.PlayOneShot(BadSound);
     }
 
     public bool IsDestroyed(Vector2 gridPosition)
